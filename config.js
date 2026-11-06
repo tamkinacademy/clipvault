@@ -1,14 +1,12 @@
-// এই ফাইলটা একবারই ঠিক করতে হবে।
-// Firebase Console → Project settings → Your apps → Web app → Config থেকে কপি করে বসান।
 window.CFG = {
   firebase: {
-    apiKey: "PASTE_API_KEY",
-    authDomain: "PASTE_AUTH_DOMAIN",
-    projectId: "PASTE_PROJECT_ID",
-    storageBucket: "PASTE_STORAGE_BUCKET",
-    messagingSenderId: "PASTE_SENDER_ID",
-    appId: "PASTE_APP_ID"
+    apiKey: "AIzaSyD1uWle_USBMBO_rJuT64TMCmmzyO1rdH8",
+    authDomain: "techcraft-gigs.firebaseapp.com",
+    projectId: "techcraft-gigs",
+    storageBucket: "techcraft-gigs.firebasestorage.app",
+    messagingSenderId: "402779044950",
+    appId: "1:402779044950:web:6cf1f29ef626b820b48ff7",
+    measurementId: "G-770NMREX72"
   },
-  // অ্যাডমিন হিসেবে যে ইমেইলে Firebase Authentication-এ ইউজার বানিয়েছেন, সেটা হুবহু লিখুন
-  adminEmail: "PASTE_ADMIN_EMAIL"
+  adminEmail: "mdtamkenaltamver@gmail.com"
 };
