@@ -137,6 +137,7 @@ import {getFirestore,collection,getDocs,query,orderBy,limit,doc,getDoc,setDoc,ad
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safe=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return ""}};
+function imgOf(u){u=safe(u);if(!u)return "";try{const x=new URL(u);if(x.hostname==="drive.google.com"){const m=x.pathname.match(/\/file\/d\/([\w-]+)/)||[null,x.searchParams.get("id")];if(m[1])return "https://drive.google.com/thumbnail?id="+m[1]+"&sz=w300";}}catch(e){}return u;}
 const bn=n=>String(n).replace(/\d/g,d=>"০১২৩৪৫৬৭৮৯"[d]);
 const C=window.CFG||{};
 const ok=C.firebase&&C.firebase.apiKey&&!/^PASTE/.test(C.firebase.apiKey)&&C.adminEmail&&!/^PASTE/.test(C.adminEmail);
@@ -192,7 +193,7 @@ function drawDash(){
 }
 function drawVideos(){
   $("#vl2").innerHTML=videos.length?videos.map(v=>`<div class="row">
-    ${v.thumb&&safe(v.thumb)?`<img src="${esc(safe(v.thumb))}" alt="">`:'<div class="ph"></div>'}
+    ${imgOf(v.thumb)?`<img src="${esc(imgOf(v.thumb))}" alt="">`:'<div class="ph"></div>'}
     <div class="t"><b>${esc(v.title)}</b><small>${esc(v.category||"ক্যাটাগরি নেই")} · ${bn(v.views||0)} দেখা · ${bn(v.downloads||0)} ডাউনলোড</small> ${v.published===false?'<span class="tag">লুকানো</span>':""}</div>
     <button class="btn sm" data-e="${v.id}">এডিট</button><button class="btn sm red" data-d="${v.id}">মুছুন</button></div>`).join(""):'<p style="color:var(--muted)">এখনো কোনো ভিডিও যোগ করা হয়নি।</p>';
 }
