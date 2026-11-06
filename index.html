@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08080b">
+<title>CLIPVAULT · এআই ভিডিও লাইব্রেরি</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#08080b; --panel:#101015; --panel2:#16161d; --line:#25242c;
+  --gold:#d6a93f; --gold2:#f3d27e; --text:#ece8dc; --muted:#938f84; --bad:#e5534b; --ok:#58b97a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:"Hind Siliguri",system-ui,sans-serif;line-height:1.6;min-height:100vh;
+  background-image:radial-gradient(900px 400px at 85% -5%,rgba(214,169,63,.10),transparent 60%)}
+a{color:inherit}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+.notice{background:linear-gradient(90deg,#3a2c0c,#5a4313 50%,#3a2c0c);color:var(--gold2);text-align:center;font-size:14px;padding:7px 14px;display:none}
+header.top{position:sticky;top:0;z-index:20;background:rgba(8,8,11,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0)}
+.bar{display:flex;align-items:center;gap:16px;height:62px}
+.logo{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:25px;letter-spacing:.14em;color:var(--gold2);text-decoration:none;white-space:nowrap}
+.logo i{font-style:normal;color:var(--gold);margin-right:8px;font-size:18px}
+.search{flex:1;max-width:420px;margin-left:auto}
+.search input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:15px}
+.search input::placeholder{color:var(--muted)}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:26px;align-items:center;padding:34px 0 10px}
+.hero .shot{position:relative;aspect-ratio:16/10;border-radius:14px;overflow:hidden;background:var(--panel2);border:1px solid var(--line);cursor:pointer}
+.hero .shot img,.card .th img{width:100%;height:100%;object-fit:cover;display:block}
+.hero h1{font-size:clamp(26px,4.4vw,44px);line-height:1.2;font-weight:700;margin-bottom:12px}
+.hero p{color:var(--muted);margin-bottom:22px;max-width:46ch}
+.rule{width:54px;height:3px;background:var(--gold);margin-bottom:16px;border-radius:2px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:11px 20px;font-weight:600;cursor:pointer;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1405}
+.btn.ghost{background:var(--panel2);border:1px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.play{position:absolute;inset:0;display:grid;place-items:center}
+.play span{width:62px;height:62px;border-radius:50%;background:rgba(8,8,11,.7);border:2px solid var(--gold2);display:grid;place-items:center;color:var(--gold2);font-size:22px;padding-left:4px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:22px 0 6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 16px;cursor:pointer;font-size:14px;color:var(--muted)}
+.chip.on{background:var(--gold);color:#1a1405;border-color:var(--gold);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding:16px 0 40px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.card .th{position:relative;aspect-ratio:16/10;background:var(--panel2);cursor:pointer}
+.card .dur{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.75);font-size:12px;padding:1px 8px;border-radius:6px}
+.card .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font-size:16px;line-height:1.35;font-weight:600}
+.meta{font-size:13px;color:var(--muted)}
+.card .row{display:flex;gap:8px;margin-top:auto}
+.card .row .btn{flex:1;justify-content:center;padding:8px 10px;font-size:14px}
+.empty{padding:60px 10px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--text);font-size:18px;margin-bottom:6px}
+.noimg{width:100%;height:100%;display:grid;place-items:center;color:#4a4638;font-size:34px}
+footer{border-top:1px solid var(--line);padding:30px 0 40px;margin-top:10px;color:var(--muted);font-size:14px}
+footer h4{color:var(--text);margin-bottom:10px;font-size:16px}
+.contact{display:grid;gap:10px;max-width:460px}
+.contact input,.contact textarea,.q input{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.contact textarea{min-height:84px;resize:vertical}
+dialog{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:16px;padding:0;width:min(760px,94vw);max-height:92vh;overflow:auto;margin:auto}
+dialog::backdrop{background:rgba(0,0,0,.78)}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.dh h2{font-size:18px;font-weight:600}
+.x{background:none;border:0;font-size:24px;cursor:pointer;color:var(--muted);line-height:1}
+.player{background:#000;aspect-ratio:16/9;width:100%}
+.player video,.player iframe{width:100%;height:100%;border:0;display:block}
+.dbody{padding:16px 18px 20px}
+.gate .ad{min-height:120px;border:1px dashed #3a3524;border-radius:12px;margin:14px 0;display:grid;place-items:center;color:var(--muted);font-size:13px;overflow:hidden;text-align:center}
+.q{display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap}
+.q b{font-size:20px;color:var(--gold2)}
+.q input{width:110px}
+.bar2{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:10px 0 14px}
+.bar2 div{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.msg{font-size:14px;min-height:20px}
+.msg.bad{color:var(--bad)} .msg.ok{color:var(--ok)}
+@media(max-width:760px){
+  .hero{grid-template-columns:1fr;padding-top:20px}
+  .logo{font-size:21px}
+  .search{max-width:none}
+  .bar{gap:10px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+<div class="notice" id="notice"></div>
+<header class="top"><div class="wrap bar">
+  <a class="logo" href="./"><i>▶</i>CLIPVAULT</a>
+  <div class="search"><input id="q" type="search" placeholder="ভিডিও খুঁজুন…" aria-label="ভিডিও খুঁজুন"></div>
+</div></header>
+
+<main class="wrap">
+  <section class="hero" id="hero" hidden></section>
+  <div class="chips" id="chips" role="tablist" aria-label="ক্যাটাগরি"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden></div>
+</main>
+
+<footer><div class="wrap">
+  <h4>আমাদের জানান</h4>
+  <form class="contact" id="cf">
+    <input id="cn" placeholder="আপনার নাম" maxlength="60" required>
+    <textarea id="ct" placeholder="কোন ভিডিও চান বা কোনো সমস্যা হলে লিখুন" maxlength="800" required></textarea>
+    <button class="btn gold" type="submit" style="justify-self:start">পাঠান</button>
+    <div class="msg" id="cm"></div>
+  </form>
+  <p style="margin-top:22px">© <span id="yr"></span> <span id="sn">CLIPVAULT</span>। এখানকার সব ভিডিও এআই দিয়ে বানানো।</p>
+</div></footer>
+
+<dialog id="pd" aria-labelledby="pt">
+  <div class="dh"><h2 id="pt"></h2><button class="x" data-close aria-label="বন্ধ করুন">×</button></div>
+  <div class="player" id="pp"></div>
+  <div class="dbody"><p class="meta" id="pm"></p><p id="pdsc" style="margin:8px 0 14px"></p>
+    <button class="btn gold" id="pdl">⬇ ডাউনলোড</button></div>
+</dialog>
+
+<dialog id="gd" class="gate" aria-labelledby="gt">
+  <div class="dh"><h2 id="gt">ডাউনলোডের আগে</h2><button class="x" data-close aria-label="বন্ধ করুন">×</button></div>
+  <div class="dbody">
+    <p id="gv" style="font-weight:600"></p>
+    <div class="ad" id="ad">বিজ্ঞাপনের জায়গা</div>
+    <div class="q"><span>আপনি রোবট নন তো? </span><b id="qa"></b><input id="qi" inputmode="numeric" placeholder="উত্তর" aria-label="যোগফল"><button class="btn ghost" id="qb" type="button">যাচাই করুন</button></div>
+    <div class="bar2"><div id="pg"></div></div>
+    <div class="msg" id="gm">প্রশ্নের সঠিক উত্তর দিলে কাউন্টডাউন শুরু হবে। বিজ্ঞাপনে ক্লিক করা বাধ্যতামূলক নয়।</div>
+    <div style="margin-top:12px"><a class="btn gold" id="gl" href="#" rel="noopener" target="_blank" aria-disabled="true" style="pointer-events:none;opacity:.45">⬇ ডাউনলোড শুরু করুন</a></div>
+  </div>
+</dialog>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,getDocs,query,orderBy,limit,doc,getDoc,updateDoc,increment,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return ""}};
+const bn=n=>String(n).replace(/\d/g,d=>"০১২৩৪৫৬৭৮৯"[d]);
+const C=window.CFG||{};
+const configured=C.firebase&&C.firebase.apiKey&&!/^PASTE/.test(C.firebase.apiKey);
+$("#yr").textContent=bn(new Date().getFullYear());
+
+let db=null,videos=[],S={siteName:"CLIPVAULT",notice:"",adCode:"",wait:10},cat="সব",term="",cur=null;
+
+function embedOf(u){
+  try{const x=new URL(u),h=x.hostname.replace(/^www\./,"");
+    if(h==="youtu.be")return "https://www.youtube.com/embed/"+x.pathname.slice(1);
+    if(h==="youtube.com"){const v=x.searchParams.get("v");if(v)return "https://www.youtube.com/embed/"+v;
+      const m=x.pathname.match(/\/(shorts|embed)\/([\w-]+)/);if(m)return "https://www.youtube.com/embed/"+m[2];}
+    if(h==="drive.google.com"){const m=x.pathname.match(/\/file\/d\/([\w-]+)/);if(m)return "https://drive.google.com/file/d/"+m[1]+"/preview";}
+    if(h.endsWith("facebook.com"))return "https://www.facebook.com/plugins/video.php?href="+encodeURIComponent(u);
+  }catch(e){}
+  return "";
+}
+function dlOf(u){
+  try{const x=new URL(u);
+    if(x.hostname==="drive.google.com"){const m=x.pathname.match(/\/file\/d\/([\w-]+)/);if(m)return "https://drive.google.com/uc?export=download&id="+m[1];}
+  }catch(e){}
+  return u;
+}
+const thumb=v=>v.thumb&&safe(v.thumb)?`<img src="${esc(safe(v.thumb))}" alt="" loading="lazy">`:`<div class="noimg">▶</div>`;
+const nums=v=>`${bn(v.views||0)} বার দেখা · ${bn(v.downloads||0)} ডাউনলোড`;
+
+function render(){
+  const list=videos.filter(v=>(cat==="সব"||v.category===cat)&&(!term||(v.title+" "+(v.desc||"")).toLowerCase().includes(term)));
+  $("#grid").innerHTML=list.map(v=>`<article class="card">
+    <div class="th" data-play="${v.id}" role="button" tabindex="0" aria-label="${esc(v.title)} চালান">${thumb(v)}${v.duration?`<span class="dur">${esc(v.duration)}</span>`:""}<div class="play"><span>▶</span></div></div>
+    <div class="body"><h3>${esc(v.title)}</h3><div class="meta">${esc(v.category||"")}${v.category?" · ":""}${nums(v)}</div>
+    <div class="row"><button class="btn ghost" data-play="${v.id}">▶ দেখুন</button><button class="btn gold" data-dl="${v.id}">⬇ ডাউনলোড</button></div></div></article>`).join("");
+  const e=$("#empty");
+  if(!configured){e.hidden=false;e.innerHTML="<b>সাইট এখনো চালু হয়নি</b>config.js ফাইলে Firebase-এর তথ্য বসালে ভিডিও এখানে আসবে।";}
+  else if(!videos.length){e.hidden=false;e.innerHTML="<b>এখনো কোনো ভিডিও নেই</b>অ্যাডমিন প্যানেল থেকে প্রথম ভিডিও যোগ করুন।";}
+  else if(!list.length){e.hidden=false;e.innerHTML="<b>কিছু পাওয়া যায়নি</b>অন্য শব্দে খুঁজে দেখুন।";}
+  else e.hidden=true;
+}
+function renderChips(){
+  const cats=["সব",...new Set(videos.map(v=>v.category).filter(Boolean))];
+  $("#chips").innerHTML=cats.map(c=>`<button class="chip ${c===cat?"on":""}" data-cat="${esc(c)}" role="tab" aria-selected="${c===cat}">${esc(c)}</button>`).join("");
+}
+function renderHero(){
+  const v=videos[0],h=$("#hero");
+  if(!v){h.hidden=true;return;}
+  h.hidden=false;
+  h.innerHTML=`<div class="shot" data-play="${v.id}" role="button" tabindex="0" aria-label="সর্বশেষ ভিডিও চালান">${thumb(v)}<div class="play"><span>▶</span></div></div>
+  <div><div class="rule"></div><h1>${esc(v.title)}</h1><p>${esc(v.desc||"সবচেয়ে নতুন ভিডিও। দেখুন, তারপর ডাউনলোড করে ফেসবুক বা ইউটিউবে ব্যবহার করুন।")}</p>
+  <div class="btns"><button class="btn gold" data-play="${v.id}">▶ এখনই দেখুন</button><button class="btn ghost" data-dl="${v.id}">⬇ ডাউনলোড</button></div></div>`;
+}
+
+async function load(){
+  if(!configured){render();renderChips();return;}
+  try{
+    db=getFirestore(initializeApp(C.firebase));
+    const s=await getDoc(doc(db,"vd_settings","main"));
+    if(s.exists())S={...S,...s.data()};
+    const q=await getDocs(query(collection(db,"vd_videos"),orderBy("createdAt","desc"),limit(200)));
+    videos=q.docs.map(d=>({id:d.id,...d.data()})).filter(v=>v.published!==false);
+  }catch(e){console.error(e);$("#empty").hidden=false;$("#empty").innerHTML="<b>লোড করা যায়নি</b>ইন্টারনেট বা Firebase Rules দেখুন।";}
+  document.title=(S.siteName||"CLIPVAULT")+" · এআই ভিডিও লাইব্রেরি";
+  $("#sn").textContent=S.siteName||"CLIPVAULT";
+  if(S.notice){$("#notice").textContent=S.notice;$("#notice").style.display="block";}
+  renderChips();renderHero();render();
+}
+
+/* player */
+const seen=new Set();
+function openPlay(id){
+  const v=videos.find(x=>x.id===id);if(!v)return;cur=v;
+  $("#pt").textContent=v.title;$("#pm").textContent=nums(v);$("#pdsc").textContent=v.desc||"";
+  const src=safe(v.url),em=embedOf(src),p=$("#pp");p.innerHTML="";
+  if(em){const f=document.createElement("iframe");f.src=em;f.allow="autoplay; fullscreen; picture-in-picture";f.allowFullscreen=true;f.title=v.title;p.appendChild(f);}
+  else if(src){const m=document.createElement("video");m.src=src;m.controls=true;m.playsInline=true;m.preload="metadata";if(v.thumb&&safe(v.thumb))m.poster=safe(v.thumb);p.appendChild(m);}
+  else p.innerHTML='<div class="empty">ভিডিওর লিংক নেই</div>';
+  $("#pd").showModal();
+  if(db&&!seen.has(id)){seen.add(id);updateDoc(doc(db,"vd_videos",id),{views:increment(1)}).catch(()=>{});}
+}
+$("#pd").addEventListener("close",()=>{$("#pp").innerHTML="";});
+
+/* download gate */
+let timer=null,answer=0,unlocked=false;
+function openGate(id){
+  const v=videos.find(x=>x.id===id);if(!v)return;cur=v;unlocked=false;clearInterval(timer);
+  $("#pd").open&&$("#pd").close();
+  $("#gv").textContent=v.title;
+  const a=2+Math.floor(Math.random()*8),b=2+Math.floor(Math.random()*8);answer=a+b;
+  $("#qa").textContent=`${bn(a)} + ${bn(b)} = ?`;$("#qi").value="";$("#qi").disabled=false;$("#qb").disabled=false;
+  $("#pg").style.width="0";$("#gm").className="msg";$("#gm").textContent="প্রশ্নের সঠিক উত্তর দিলে কাউন্টডাউন শুরু হবে। বিজ্ঞাপনে ক্লিক করা বাধ্যতামূলক নয়।";
+  const gl=$("#gl");gl.removeAttribute("href");gl.style.pointerEvents="none";gl.style.opacity=".45";gl.setAttribute("aria-disabled","true");
+  const ad=$("#ad");ad.innerHTML="";
+  if(S.adCode){const r=document.createRange().createContextualFragment(S.adCode);ad.appendChild(r);}else ad.textContent="বিজ্ঞাপনের জায়গা";
+  $("#gd").showModal();
+}
+function startCount(){
+  const total=Math.max(3,Math.min(60,+S.wait||10));let left=total;
+  $("#qi").disabled=true;$("#qb").disabled=true;
+  $("#gm").className="msg";$("#gm").textContent=`আর ${bn(left)} সেকেন্ড অপেক্ষা করুন…`;
+  timer=setInterval(()=>{
+    left--;$("#pg").style.width=((total-left)/total*100)+"%";
+    if(left>0){$("#gm").textContent=`আর ${bn(left)} সেকেন্ড অপেক্ষা করুন…`;return;}
+    clearInterval(timer);unlocked=true;
+    const gl=$("#gl");gl.href=dlOf(safe(cur.download||cur.url));gl.style.pointerEvents="auto";gl.style.opacity="1";gl.removeAttribute("aria-disabled");
+    $("#gm").className="msg ok";$("#gm").textContent="প্রস্তুত! নিচের বোতামে চাপ দিন।";
+  },1000);
+}
+$("#qb").onclick=()=>{
+  if(+$("#qi").value.trim()===answer)startCount();
+  else{$("#gm").className="msg bad";$("#gm").textContent="উত্তর ভুল হয়েছে, আবার দেখুন।";}
+};
+$("#qi").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#qb").click();}});
+$("#gl").addEventListener("click",()=>{
+  if(unlocked&&db&&cur)updateDoc(doc(db,"vd_videos",cur.id),{downloads:increment(1)}).catch(()=>{});
+});
+$("#gd").addEventListener("close",()=>{clearInterval(timer);$("#ad").innerHTML="";});
+$("#pdl").onclick=()=>cur&&openGate(cur.id);
+
+/* events */
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-close]");if(c){c.closest("dialog").close();return;}
+  const p=e.target.closest("[data-play]");if(p){openPlay(p.dataset.play);return;}
+  const d=e.target.closest("[data-dl]");if(d){openGate(d.dataset.dl);return;}
+  const k=e.target.closest("[data-cat]");if(k){cat=k.dataset.cat;renderChips();render();}
+});
+document.addEventListener("keydown",e=>{
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-play][role=button]")){e.preventDefault();openPlay(e.target.dataset.play);}
+});
+$("#q").addEventListener("input",e=>{term=e.target.value.trim().toLowerCase();render();});
+$("#cf").addEventListener("submit",async e=>{
+  e.preventDefault();const m=$("#cm");
+  if(!db){m.className="msg bad";m.textContent="সাইট এখনো চালু হয়নি।";return;}
+  try{
+    await addDoc(collection(db,"vd_msgs"),{name:$("#cn").value.trim().slice(0,60),text:$("#ct").value.trim().slice(0,800),createdAt:serverTimestamp()});
+    m.className="msg ok";m.textContent="পাঠানো হয়েছে। ধন্যবাদ।";e.target.reset();
+  }catch(err){m.className="msg bad";m.textContent="পাঠানো যায়নি, একটু পরে আবার চেষ্টা করুন।";}
+});
+load();
+</script>
+</body>
+</html>
